@@ -1,0 +1,11 @@
+services:
+  ebpf-prepare:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ./app:/app
+    working_dir: /app
+    privileged: true
+    command: >
+      bash -c "go generate && go build && ./ebpf-test"
