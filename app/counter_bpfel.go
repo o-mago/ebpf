@@ -12,6 +12,14 @@ import (
 	"github.com/cilium/ebpf"
 )
 
+// Names of all BPF objects in the ELF.
+//
+// Used for safe lookups in a Collection or CollectionSpec.
+const (
+	counterMapPktCount      = "pkt_count"
+	counterProgCountPackets = "count_packets"
+)
+
 // loadCounter returns the embedded CollectionSpec for counter.
 func loadCounter() (*ebpf.CollectionSpec, error) {
 	reader := bytes.NewReader(_CounterBytes)
@@ -32,7 +40,7 @@ func loadCounter() (*ebpf.CollectionSpec, error) {
 //	*counterMaps
 //
 // See ebpf.CollectionSpec.LoadAndAssign documentation for details.
-func loadCounterObjects(obj interface{}, opts *ebpf.CollectionOptions) error {
+func loadCounterObjects(obj any, opts *ebpf.CollectionOptions) error {
 	spec, err := loadCounter()
 	if err != nil {
 		return err
