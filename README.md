@@ -92,7 +92,21 @@ If you are running on a Linux host, you can compile and execute the application 
 If you are on a Mac, the project builds out of the box using `go build` but runs the friendly stub implemented in [main_stub.go](file:///Users/mago/dev/ebpf/app/main_stub.go).
 
 To run the actual eBPF code from a Mac:
-1. Install **Lima** (`brew install lima`).
-2. Spin up a Linux (Ubuntu) VM using `limactl start`.
-3. Enter the VM shell (`limactl shell default`), where your Mac's home directory is automatically mounted under `/Users/`.
-4. Install dependencies inside the VM (`sudo apt install clang llvm libbpf-dev linux-headers-generic`) and proceed with **Option 1**.
+1. Install **Lima**:
+   ```bash
+   brew install lima
+   ```
+2. Spin up the pre-configured Linux (Ubuntu 26.04) VM using the provided [lima.yaml](file:///Users/mago/dev/ebpf/lima.yaml):
+   ```bash
+   limactl start lima.yaml
+   ```
+3. Enter the VM shell:
+   ```bash
+   limactl shell lima
+   ```
+4. Inside the VM, navigate to the project directory (your home directory is automatically mounted):
+   ```bash
+   cd ~/dev/ebpf/app
+   ```
+   *(Note: All dependencies like Clang, LLVM, kernel headers, and Go 1.27.0 are already pre-installed by the provisioning script).*
+5. Proceed with **Option 1** inside the VM shell.

@@ -1,0 +1,74 @@
+# lima.yaml
+# Lima configuration file to spin up a Linux VM optimized for eBPF and Go development.
+# Reference: https://github.com/lima-vm/lima
+#
+# To start the VM:
+#   limactl start lima.yaml
+#
+# To open a shell inside the VM:
+#   limactl shell lima
+
+images:
+  # Ubuntu 26.04 LTS (Resolute Raccoon)
+  - location: "https://cloud-images.ubuntu.com/releases/26.04/release/ubuntu-26.04-server-cloudimg-amd64.img"
+    arch: "x86_64"
+  - location: "https://cloud-images.ubuntu.com/releases/26.04/release/ubuntu-26.04-server-cloudimg-arm64.img"
+    arch: "aarch64"
+
+# VM Resource allocation
+cpus: 4
+memory: "4GiB"
+disk: "20GiB"
+
+# Mount the host directory so the workspace can be accessed
+mounts:
+  - location: "~"
+    writable: true
+  - location: "/tmp/lima"
+    writable: true
+
+# Provisioning script to install all needed eBPF dependencies and Go
+provision:
+  - mode: system
+    script: |
+      export DEBIAN_FRONTEND=noninteractive
+      
+      # 1. Update package list
+      apt-get update -y
+      
+      # 2. Install essential build and eBPF compilation tools
+      apt-get install -y \
+        build-essential \
+        make \
+        gcc \
+        clang \
+        llvm \
+        libelf-dev \
+        libpcap-dev \
+        libbpf-dev \
+        linux-headers-generic \
+        linux-tools-common \
+        linux-tools-generic \
+        pkg-config \
+        git \
+        curl
+        
+      # Install kernel-specific tools (required for matching bpftool/perf)
+      apt-get install -y linux-tools-$(uname -r) || true
+      
+      # 3. Install Go 1.27.0 directly from official sources
+      GO_ARCH="amd64"
+      if [ "$(uname -m)" = "aarch64" ]; then
+        GO_ARCH="arm64"
+      fi
+      curl -fsSL "https://go.dev/dl/go1.27.0.linux-${GO_ARCH}.tar.gz" -o /tmp/go.tar.gz
+      rm -rf /usr/local/go
+      tar -C /usr/local -xzf /tmp/go.tar.gz
+      rm /tmp/go.tar.gz
+      
+      # Create symlinks to ensure 'go' is accessible in non-interactive/SSH shells
+      ln -sf /usr/local/go/bin/go /usr/local/bin/go
+      ln -sf /usr/local/go/bin/gofmt /usr/local/bin/gofmt
+      
+      # Fix missing asm/types.h by symlinking architecture-specific headers
+      ln -sf /usr/include/$(uname -m)-linux-gnu/asm /usr/include/asm
