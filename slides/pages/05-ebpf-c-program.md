@@ -2,8 +2,8 @@
 layout: section
 ---
 
-# Part 4: The Kernel-Space Code (C)
-## Analyzing our eBPF Packet Counter Program (`counter.c`)
+# Part 4: The Kernel-Space Code
+## Analyzing our eBPF Packet Counter Program (counter.c)
 
 <!--
 Now we will walk through the actual code we have in our repository.

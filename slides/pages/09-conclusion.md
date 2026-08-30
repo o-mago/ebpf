@@ -28,32 +28,18 @@ And Go is the perfect control plane partner. It allows us to compile, embed, loa
 
 ---
 layout: center
+class: text-center
 ---
 
-# Q&A & Resources
+# Thank you!
 
-<div class="grid grid-cols-2 gap-10 mt-8 text-left text-base">
-<div>
-<p class="font-bold mb-2">Further Reading</p>
-<ul class="list-disc ml-4 space-y-1">
-  <li><strong>ebpf.io</strong> — The official eBPF community homepage.</li>
-  <li><strong>github.com/cilium/ebpf</strong> — The Cilium Go library.</li>
-  <li><strong>ebpf.io/slack</strong> — Join the community Slack channel.</li>
-  <li><strong>Cilium / Tetragon repositories</strong> — Great source of production-grade Go+eBPF code.</li>
-</ul>
-</div>
-<div class="card card-purple flex flex-col justify-center items-center">
-
-🐹 **Thank you!**
-
-<p class="text-sm text-slate-600 mt-2 text-center">Questions? Now is the time!</p>
-
-</div>
+<div class="flex flex-col items-center justify-center gap-3 mt-6">
+  <img src="/qrcode-links.webp" alt="QR Code" style="width:180px;height:180px;background:#ffffff;border:2px solid #e2e8f0;border-radius:8px;object-fit:fill" />
+  <p class="text-sm text-slate-500">Scan to connect</p>
 </div>
 
 <!--
-Thank you for your time!
-I hope this gives you a great starting point for your own eBPF journey in Go.
-I've listed some useful resources on the slide: ebpf.io is the main homepage, the Cilium Go repository is where the code lives, and the Slack community is very friendly and active.
-I will now open the floor to any questions you may have.
+Thank you all for your time!
+I hope this presentation has given you a good introduction to eBPF with Go.
+Please scan the QR code to connect on social media. I am now open to any questions you may have.
 -->

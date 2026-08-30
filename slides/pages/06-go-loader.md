@@ -16,47 +16,6 @@ We'll look at `main.go`. It has four distinct phases:
 
 ---
 
-# Phase 1: Preparing System Resources (rlimit)
-
-Before loading any eBPF code, we must adjust the lockable memory limits on older kernels.
-
-```go
-func main() {
-    // Remove resource limits for kernels <5.11.
-    if err := rlimit.RemoveMemlock(); err != nil {
-        log.Fatal("Removing memlock:", err)
-    }
-    
-    // ...
-}
-```
-
-<div class="grid grid-cols-2 gap-8 mt-4 text-sm">
-<div class="hl hl-blue">
-
-**What is Memlock?**
-* Historically, the Linux kernel restricted the amount of memory a non-root process could lock into RAM (`RLIMIT_MEMLOCK`).
-* Since BPF maps are locked in kernel memory, loading maps would fail if they exceeded this limit.
-
-</div>
-<div class="hl hl-green">
-
-**Modern Linux Kernels (5.11+)**
-* Modern kernels use cgroups to track memory overhead for BPF, making memlock adjustments obsolete.
-* However, keeping `rlimit.RemoveMemlock()` ensures your Go agent is backward-compatible with older systems.
-
-</div>
-</div>
-
-<!--
-The first step in `main.go` is calling `rlimit.RemoveMemlock()`.
-Historically, the kernel had strict limits on how much memory a process could lock in RAM. Since BPF maps live in pinned kernel memory, they count against this "locked memory limit".
-Calling this function lifts those limits.
-In modern kernels (5.11 and newer), BPF memory usage is tracked via control groups (cgroups), so this is no longer strictly necessary. However, including it is a best practice to ensure your agent runs on older kernels.
--->
-
----
-
 # Phase 2: Loading eBPF Objects into the Kernel
 
 `bpf2go` generated the code to load our compiled ELF objects. We initialize them with a single function call:

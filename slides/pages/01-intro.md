@@ -22,7 +22,7 @@
 </div>
 
 <div class="flex flex-col items-center gap-2">
-  <img src="/qrcode.png" alt="QR Code" style="width:200px;height:200px;min-width:200px;min-height:200px;background:#f1f5f9;border:2px solid #e2e8f0;border-radius:8px;object-fit:fill" />
+  <img src="/qrcode-links.webp" alt="QR Code" style="width:200px;height:200px;min-width:200px;min-height:200px;background:#f1f5f9;border:2px solid #e2e8f0;border-radius:8px;object-fit:fill" />
   <p class="text-xs text-center" style="color:#94a3b8">My social links</p>
 </div>
 
@@ -56,7 +56,7 @@ layout: center
 <ol class="list-decimal ml-4 space-y-1" start="4">
   <li><strong>The eBPF Code (C)</strong> (A closer look at <code>counter.c</code>)</li>
   <li><strong>The Go Control Plane</strong> (Loading, Attaching, Map Querying)</li>
-  <li><strong>Real-world Applications</strong> (Networking, Security, Observability)</li>
+  <li><strong>Real-world Applications</strong> (Networking & Auto-Instrumentation)</li>
 </ol>
 </div>
 </div>
@@ -64,7 +64,7 @@ layout: center
 <!--
 We will divide our time into two parts.
 First, we will lay down the conceptual foundations of eBPF. We'll understand what it is, why it is a paradigm shift, and how the internals work. We will also see why Go is a premier language for building control planes.
-Second, we will dive into a real-world code example. We have a packet counter running at the XDP level. We'll look at the C program that runs in the kernel, and the Go loader that runs in userspace. We will conclude with real-world projects like Cilium and Tetragon.
+Second, we will dive into a real-world code example. We have a packet counter running at the XDP level. We'll look at the C program that runs in the kernel, and the Go loader that runs in userspace. We will conclude with real-world projects like Cilium and OpenTelemetry.
 -->
 
 ---
