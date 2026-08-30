@@ -1,0 +1,8 @@
+### Call Service 1 (Allowed to connect to Service 3)
+GET http://localhost:8081/call
+
+### Call Service 2 (Blocked from connecting to Service 3 by eBPF)
+GET http://localhost:8082/call
+
+### Call Service 3 directly
+GET http://localhost:8083/

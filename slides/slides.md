@@ -1,7 +1,7 @@
 ---
 theme: default
 background: '#ffffff'
-title: Introduction to eBPF with Go
+title: Hacking the Kernel with Go
 info: |
   An introductory presentation on leveraging the power of eBPF (Extended Berkeley Packet Filter) using Golang.
 class: text-center
@@ -15,10 +15,10 @@ fonts:
   provider: none
 ---
 
-# Introduction to eBPF with Go
+# Hacking the Kernel with Go
 
 <div class="text-xl text-slate-500 mt-4">
-  Unlock Linux Kernel Power Safely from Go Userspace
+  A Practical Introduction to eBPF
 </div>
 
 <div class="abs-br m-6 text-sm" style="color:#94a3b8">

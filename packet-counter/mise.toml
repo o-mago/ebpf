@@ -1,0 +1,15 @@
+[tools]
+go = "1.27.0"
+
+[tasks.generate]
+description = "Generate eBPF Go bindings"
+run = "limactl shell lima go generate"
+
+[tasks.build]
+description = "Generate bindings and build packet counter binary"
+depends = ["generate"]
+run = "limactl shell lima go build -o bin/packet-counter"
+
+[tasks.run]
+description = "Run the eBPF Packet Counter inside Linux VM (requires sudo)"
+run = "limactl shell lima sudo ./bin/packet-counter"

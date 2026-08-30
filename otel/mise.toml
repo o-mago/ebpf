@@ -1,0 +1,36 @@
+[tools]
+go = "1.27.0"
+
+[tasks.generate]
+description = "Generate eBPF Go bindings for all components"
+run = "limactl shell lima bash -c 'cd otel-tracer && go generate && cd ../otel-profiler && go generate && cd ../../firewall/ebpf && go generate'"
+
+[tasks."build:api"]
+description = "Build the api-server binary inside Linux VM"
+run = "limactl shell lima bash -c 'cd api-server && go build -o bin/api-server'"
+
+[tasks."build:tracer"]
+description = "Generate bindings and build the tracer binary inside Linux VM"
+depends = ["generate"]
+run = "limactl shell lima bash -c 'cd otel-tracer && go build -o bin/otel-tracer'"
+
+[tasks."build:profiler"]
+description = "Generate bindings and build the profiler binary inside Linux VM"
+depends = ["generate"]
+run = "limactl shell lima bash -c 'cd otel-profiler && go build -o bin/otel-profiler'"
+
+[tasks.build]
+description = "Build all applications inside Linux VM"
+depends = ["build:api", "build:tracer", "build:profiler"]
+
+[tasks."run:api"]
+description = "Run the api-server inside Linux VM"
+run = "limactl shell lima bash -c 'cd api-server && ./bin/api-server'"
+
+[tasks."run:tracer"]
+description = "Run the eBPF tracer inside Linux VM (requires sudo)"
+run = "limactl shell lima bash -c 'cd otel-tracer && sudo ./bin/otel-tracer ../api-server/bin/api-server'"
+
+[tasks."run:profiler"]
+description = "Run the eBPF profiler inside Linux VM (auto-detects api-server PID if not passed)"
+run = "limactl shell lima bash -c 'cd otel-profiler && PID=\"$1\"; if [ -z \"$PID\" ]; then PID=$(pgrep -x api-server | tail -n 1); fi; if [ -z \"$PID\" ]; then echo \"Error: api-server process not found inside VM. Please start it first.\"; exit 1; fi; echo \"Targeting api-server PID: $PID\"; sudo ./bin/otel-profiler \"$PID\"' --"

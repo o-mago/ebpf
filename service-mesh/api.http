@@ -1,0 +1,30 @@
+# ==============================================================================
+# eBPF SERVICE MESH SIMULATION SUITE
+# ==============================================================================
+# Architecture Note:
+# Gateway Services (Service 1 & 2) do not implement explicit route handlers. 
+# They act as transparent reverse proxies with catch-all "/" routing handlers.
+# When they receive a request on ANY path (e.g. /api/work or /health):
+#   1. They forward it to the Stable Backend (127.0.0.1:8083) on the same path.
+#   2. During this forwarding, the socket connect() syscall is intercepted by eBPF.
+#   3. eBPF then applies Cgroup firewall blocks (for S2) or Canary port rewrites (for S1).
+
+###
+### TEST 1: Gateway Allowed (Service 1) -> /api/work
+# Path /api/work is forwarded to 8083. eBPF will allow the connection and
+# probabilistically rewrite the target port to 8084 (Canary v2) 50% of the time.
+GET http://localhost:8081/api/work
+
+###
+### TEST 2: Gateway Blocked (Service 2) -> /api/work
+# Path /api/work is forwarded to 8083. eBPF connect hook identifies Service 2's
+# PID on the blocklist and drops the connection, returning "Operation not permitted".
+GET http://localhost:8082/api/work
+
+###
+### TEST 3: Direct Call to Stable Backend v1 (Service 3)
+GET http://localhost:8083/health
+
+###
+### TEST 4: Direct Call to Canary Backend v2 (Service 4)
+GET http://localhost:8084/health

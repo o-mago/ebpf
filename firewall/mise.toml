@@ -1,0 +1,27 @@
+[tools]
+go = "1.27.0"
+
+[tasks.generate]
+description = "Generate eBPF Go bindings"
+run = "limactl shell lima bash -c 'cd ebpf && go generate'"
+
+[tasks.build]
+description = "Generate bindings and build all service mesh binaries"
+depends = ["generate"]
+run = "limactl shell lima bash -c 'cd service && go build -o bin/service && cd ../ebpf && go build -o bin/ebpf-mesh'"
+
+[tasks."run:s1"]
+description = "Run Service 1 on port 8081 inside Linux VM"
+run = "limactl shell lima bash -c 'cd service && ./bin/service 1'"
+
+[tasks."run:s2"]
+description = "Run Service 2 on port 8082 inside Linux VM"
+run = "limactl shell lima bash -c 'cd service && ./bin/service 2'"
+
+[tasks."run:s3"]
+description = "Run Service 3 on port 8083 inside Linux VM"
+run = "limactl shell lima bash -c 'cd service && ./bin/service 3'"
+
+[tasks."run:firewall"]
+description = "Run the eBPF Firewall daemon inside Linux VM (auto-detects Service 2 PID if not passed)"
+run = "limactl shell lima bash -c 'cd ebpf && sudo ./bin/ebpf-mesh \"$@\"' --"

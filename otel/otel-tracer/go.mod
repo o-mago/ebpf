@@ -1,4 +1,4 @@
-module ebpf-test
+module otel-tracer
 
 go 1.27.0
 

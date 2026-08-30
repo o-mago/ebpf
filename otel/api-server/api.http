@@ -1,0 +1,9 @@
+### Simple Healthcheck Endpoint
+GET http://localhost:8080/health
+Accept: application/json
+
+###
+
+### Work Simulation Endpoint (Variable duration)
+GET http://localhost:8080/api/work
+Accept: application/json

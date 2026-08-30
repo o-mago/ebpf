@@ -1,0 +1,58 @@
+[tools]
+go = "1.27.0"
+
+[tasks."run:slides"]
+description = "Install dependencies and run the Slidev introduction slides locally"
+run = "cd slides && npm install && npm run dev"
+
+[tasks."setup:lima"]
+description = "Verify Lima installation, install via Homebrew if missing, and start/provision VM"
+run = """
+if ! command -v limactl &> /dev/null; then
+    echo "Lima is not installed. Installing with Homebrew..."
+    brew install lima
+else
+    echo "Lima is already installed."
+fi
+
+if limactl list | grep -q "^lima\\s"; then
+    echo "Lima VM 'lima' is already configured."
+    if limactl list | grep "^lima\\s" | grep -q "Running"; then
+        echo "Lima VM is already running."
+    else
+        echo "Starting existing Lima VM..."
+        limactl start lima
+    fi
+else
+    echo "Creating and starting Lima VM from lima.yaml..."
+    limactl start --tty=false lima.yaml
+fi
+"""
+
+[tasks."run:packet-counter"]
+description = "Run Packet Counter project with supervised logs in a single terminal"
+run = "limactl shell lima go run supervisor.go packet-counter || true"
+
+[tasks."run:otel"]
+description = "Run OpenTelemetry Auto-Instrumentation (Tracer & Profiler) project in a single terminal"
+run = "limactl shell lima go run supervisor.go otel || true"
+
+[tasks."run:firewall"]
+description = "Run Cgroup Blocker Firewall project with supervised logs in a single terminal"
+run = "limactl shell lima go run supervisor.go firewall || true"
+
+[tasks."run:service-mesh-services"]
+description = "Run only the 4 service-mesh gateway/backend services in parallel with logs"
+run = "limactl shell lima go run supervisor.go service-mesh-services || true"
+
+[tasks."run:service-mesh-panel"]
+description = "Run the fullscreen eBPF Service Mesh Control Panel"
+run = "limactl shell lima sudo service-mesh/ebpf/bin/ebpf-mesh || true"
+
+[tasks."run:service-mesh"]
+description = "Run complete service mesh: opens a new terminal window for services and TUI in current terminal"
+run = """
+osascript -e "tell application \\"Terminal\\" to do script \\"cd '$PWD' && mise run run:service-mesh-services\\""
+sleep 2
+mise run run:service-mesh-panel
+"""

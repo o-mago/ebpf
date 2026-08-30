@@ -30,3 +30,9 @@ go.work.sum
 # Editor/IDE
 # .idea/
 # .vscode/
+
+# Compiled application binaries
+bin/
+
+# eBPF raw ELF files (can be regenerated with go generate)
+*.o

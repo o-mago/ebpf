@@ -1,0 +1,31 @@
+[tools]
+go = "1.27.0"
+
+[tasks.generate]
+description = "Generate eBPF Go bindings"
+run = "limactl shell lima bash -c 'cd ebpf && go generate'"
+
+[tasks.build]
+description = "Generate bindings and build all service mesh binaries"
+depends = ["generate"]
+run = "limactl shell lima bash -c 'cd service && go build -o bin/service && cd ../ebpf && go build -o bin/ebpf-mesh'"
+
+[tasks."run:s1"]
+description = "Run Service 1 (Gateway) inside Linux VM"
+run = "limactl shell lima bash -c 'cd service && ./bin/service 1'"
+
+[tasks."run:s2"]
+description = "Run Service 2 (Gateway) inside Linux VM"
+run = "limactl shell lima bash -c 'cd service && ./bin/service 2'"
+
+[tasks."run:s3"]
+description = "Run Service 3 (Stable Backend) inside Linux VM"
+run = "limactl shell lima bash -c 'cd service && ./bin/service 3'"
+
+[tasks."run:s4"]
+description = "Run Service 4 (Canary Backend) inside Linux VM"
+run = "limactl shell lima bash -c 'cd service && ./bin/service 4'"
+
+[tasks."run:control-panel"]
+description = "Run the eBPF Service Mesh Control Panel (requires sudo)"
+run = "limactl shell lima bash -c 'cd ebpf && sudo ./bin/ebpf-mesh'"

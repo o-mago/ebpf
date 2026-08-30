@@ -1,112 +1,83 @@
-# eBPF Packet Counter with Go
+# eBPF Study and Simulation Repository (Go + Kernel C)
 
-This repository contains a practical, introductory example of how to build a userspace agent in **Go (Golang)** that connects to and manages an **eBPF (Extended Berkeley Packet Filter)** program running inside the Linux kernel space.
+This repository contains a collection of practical, hands-on learning labs and simulations powered by **eBPF (Extended Berkeley Packet Filter)** in the Linux kernel space, managed by userspace control daemons written in **Go (Golang)**.
 
----
-
-## 📋 What does the code do?
-
-The project is a high-performance **network packet counter** that intercepts traffic at the lowest possible level of the Linux networking stack (XDP). It consists of two main parts:
-
-### 1. Kernel-Space: `app/counter.c` (C)
-* An eBPF program attached to the **XDP (eXpress Data Path)** hook.
-* It intercepts every incoming packet on the configured network interface.
-* It atomically increments (`__sync_fetch_and_add`) a counter inside a `BPF_MAP_TYPE_ARRAY` **BPF Map** allocated in kernel memory.
-* It returns `XDP_PASS`, allowing the packet to proceed normally up the network stack.
-
-### 2. User-Space: `app/main.go` (Go)
-* Uses the `github.com/cilium/ebpf` library to load the compiled eBPF bytecode into the Linux kernel.
-* Dynamically resolves a suitable, active network interface on the system (looking for `eth0`, any active interface, or falling back to the loopback `lo` interface).
-* Attaches the eBPF program to the resolved network interface via `link.AttachXDP`.
-* Periodically polls the counter from the BPF Map every second (`objs.PktCount.Lookup`) and logs the count to the console.
+The environment is fully portable and runs inside a lightweight, pre-configured Linux virtual machine managed by **Lima VM**.
 
 ---
 
-## 🚀 How to Run the Project
+## 📁 Repository Structure
 
-Since eBPF is a **Linux** kernel technology, you need a Linux environment to compile and run the actual eBPF code. On macOS, the program compiles a fallback stub indicating that execution requires Linux.
+The workspace is organized into the following sub-projects:
 
-### Prerequisites
-* **Linux Kernel 5.8+** (5.11+ is recommended to avoid adjusting `rlimit` lockable memory limits).
-* **Go 1.24+** installed.
-* **Clang** and **LLVM** installed (used by `bpf2go` to compile the C code).
-* **llvm-strip** (usually bundled with LLVM).
+### 1. [``slides/``](file:///Users/mago/dev/ebpf/slides) (Theoretical Introduction)
+Contains interactive slide presentations based on **Slidev** (Markdown/HTML) serving as a conceptual introduction to the eBPF ecosystem (its architecture, hooks like uprobes, kprobes, tracepoints, socket filters, XDP, and the inner workings of the kernel verifier).
 
----
+To run and view the slides locally in your browser:
+```bash
+# From the root of this repository:
+mise run run:slides
+```
 
-### Option 1: Compiling and Running Locally (Linux)
+### 2. [``packet-counter/``](file:///Users/mago/dev/ebpf/packet-counter) (XDP Packet Counter)
+An introductory, high-performance network packet counter hooked at the **XDP (eXpress Data Path)** level on the network interface. It atomically increments counter maps in kernel memory for every incoming frame before passing the packet up to the traditional OS network stack.
 
-1. **Generate the Go wrappers and BPF bytecode**:
-   Inside the `app/` directory, run `go generate` to trigger the `bpf2go` tool (configured in [gen.go](file:///Users/mago/dev/ebpf/app/gen.go)):
-   ```bash
-   cd app
-   go generate
-   ```
-   *This generates the `counter_bpfel.go`, `counter_bpfel.o`, `counter_bpfeb.go`, and `counter_bpfeb.o` files.*
+### 3. [``otel/``](file:///Users/mago/dev/ebpf/otel) (OpenTelemetry Observability & Profiling)
+* **`otel-tracer/`**: A fully transparent distributed HTTP tracer. Hooks into Go runtime handlers using **Uprobes** to capture and correlate requests, publishing OpenTelemetry trace spans without modifications to the application code.
+* **`otel-profiler/`**: CPU profiling (via `perf_event` clock interrupts) and memory heap allocation tracking (via `runtime.mallocgc` uprobes). Includes a native Symbol Resolver in Go to parse binary offsets and map raw instruction pointers to readable function names.
 
-2. **Compile the Go application**:
-   ```bash
-   go build -o ebpf-test
-   ```
+### 4. [``firewall/``](file:///Users/mago/dev/ebpf/firewall) (Cgroup-based Network Policies)
+A cgroup-based firewall hooked at `cgroup/connect4` (Cgroups v2). It intercepts outgoing TCP connection requests (`connect()` system calls) and blocks unauthorized traffic dynamically for processes registered in an eBPF blocklist map, responding immediately with `EPERM` (Operation not permitted).
 
-3. **Run the program**:
-   eBPF requires elevated privileges to load code into the kernel and attach to network interfaces.
-
-   * **Simple Method (using sudo)**:
-     ```bash
-     sudo ./ebpf-test
-     ```
-   
-   * **Recommended Method (using Capabilities only)**:
-     Avoid running the entire process as root by granting specific capabilities to the compiled binary:
-     ```bash
-     sudo setcap cap_bpf,cap_net_admin,cap_sys_admin+ep ./ebpf-test
-     ./ebpf-test
-     ```
-
-4. **Generate traffic to test**:
-   In another terminal, send pings or HTTP requests to see the packet counter rise:
-   ```bash
-   ping -c 10 1.1.1.1
-   # or
-   curl https://google.com
-   ```
+### 5. [``service-mesh/``](file:///Users/mago/dev/ebpf/service-mesh) (Unified eBPF Service Mesh)
+A consolidated simulator showcasing a **kernel-native Service Mesh**:
+* **Security**: Firewall policies matching socket requests in the kernel.
+* **Traffic Control (Canary)**: Dynamic, zero-proxy canary routing (50/50 split) by rewriting port targets inside the `connect()` system call context.
+* **Observability**: Live tracing spans, CPU %, and heap memory allocation rates collected per service.
+* **Control Panel**: A real-time, terminal-based dashboard displaying active service PIDs, metrics, routing rules, and tracing logs.
 
 ---
 
-### Option 2: Running via Docker (Linux)
+## 🛠️ Environment Setup (macOS)
 
-If you are running on a Linux host, you can compile and execute the application encapsulated in a privileged Docker container:
+Since eBPF is a Linux-native kernel technology, we use **Lima VM** to run a lightweight, virtualized Linux environment on macOS. We have automated this setup in a root-level **Mise** task.
 
-1. **Spin up the services**:
-   In the root of the project (where `docker-compose.yaml` is located), execute:
-   ```bash
-   docker compose up --build
-   ```
-   *The container compiles the C code, builds the Go binary, and runs the application in `privileged: true` mode to allow interaction with the network interfaces.*
+### 1. Provision and Start the VM
+From the root of this repository on your macOS host, run:
+```bash
+mise run setup:lima
+```
+*This task checks if Homebrew and Lima are installed (installing them if missing) and starts the Linux VM using the provided [lima.yaml](file:///Users/mago/dev/ebpf/lima.yaml) configuration file in non-interactive mode.*
 
----
+### 2. Access the VM Shell
+Once the VM is running, open the Linux shell:
+```bash
+limactl shell lima
+```
 
-### Developing on macOS
+### 3. Build and Run Projects
+Inside the VM shell, navigate to the mounted folder of any project (e.g., `service-mesh`) and run its local Mise task:
+```bash
+# Inside the VM shell:
+cd ~/dev/ebpf/service-mesh
+mise run build
+```
+*(Note: Tasks loading eBPF bytecode or hooking kernel layers require elevated permissions. The local `mise.toml` scripts automatically apply `sudo` where necessary).*
 
-If you are on a Mac, the project builds out of the box using `go build` but runs the friendly stub implemented in [main_stub.go](file:///Users/mago/dev/ebpf/app/main_stub.go).
+### 4. Supervised Execution with Prefixed Logs (Docker-Compose Style)
+If you want to compile, build, and run all services for a project inside a single terminal session with colored, interleaved log streams (similar to `docker-compose up`), run the following commands directly from the root of this repository on your macOS host:
 
-To run the actual eBPF code from a Mac:
-1. Install **Lima**:
-   ```bash
-   brew install lima
-   ```
-2. Spin up the pre-configured Linux (Ubuntu 26.04) VM using the provided [lima.yaml](file:///Users/mago/dev/ebpf/lima.yaml):
-   ```bash
-   limactl start lima.yaml
-   ```
-3. Enter the VM shell:
-   ```bash
-   limactl shell lima
-   ```
-4. Inside the VM, navigate to the project directory (your home directory is automatically mounted):
-   ```bash
-   cd ~/dev/ebpf/app
-   ```
-   *(Note: All dependencies like Clang, LLVM, kernel headers, and Go 1.27.0 are already pre-installed by the provisioning script).*
-5. Proceed with **Option 1** inside the VM shell.
+```bash
+# Run Packet Counter
+mise run run:packet-counter
+
+# Run OpenTelemetry Auto-Instrumentation (api-server + tracer + profiler)
+mise run run:otel
+
+# Run Cgroup Blocker Firewall (3 services + firewall daemon)
+mise run run:firewall
+
+# Run Unified Service Mesh (4 services + control panel with log stream)
+mise run run:service-mesh
+```
+*Note: Press `Ctrl+C` in your terminal to gracefully terminate all running services. The host-level supervisor will intercept the signal and cleanly stop all background processes inside the VM, preventing any port leaks.*
