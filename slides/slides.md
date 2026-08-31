@@ -21,8 +21,8 @@ fonts:
   A Practical Introduction to eBPF
 </div>
 
-<div class="abs-br m-6 text-sm" style="color:#94a3b8">
-  2026
+<div class="flex flex-col items-center">
+  <img src="/ebpf-go.png" alt="OTel Sidecar Model" class="h-50 pt-10 w-auto object-contain" />
 </div>
 
 <!--

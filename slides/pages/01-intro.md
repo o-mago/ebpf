@@ -1,6 +1,11 @@
+---
+dragPos:
+  my-box: 621,176,326,205
+---
+
 # About me
 
-<div class="grid gap-6 mt-1" style="grid-template-columns: 180px 1fr 140px">
+<div class="grid gap-6 mt-1" style="grid-template-columns: 180px 1fr 180px">
 
 <div class="flex flex-col items-center gap-3">
   <img src="/speaker-photo.png" alt="Photo" class="rounded-2xl object-cover" style="width:160px;height:160px;background:#f1f5f9;border:2px solid #e2e8f0" />
@@ -8,22 +13,20 @@
 </div>
 
 
-<div class="flex flex-col justify-between py-1">
-  <p class="text-2xl font-bold mb-2" style="color:#0f172a">Alexandre Cabral</p>
-  <ul class="text-base text-slate-700 space-y-2">
+<div class="flex flex-col justify-center py-1">
+  <p class="name-huge font-extrabold" style="color:#0f172a">Alexandre Cabral</p>
+  <p class="name-big font-bold" style="color:#0f172a">Mago 🧙‍♂️</p>
+  <ul class="list-none pl-0 space-y-3 text-huge text-slate-700">
     <li>📍 Juiz de Fora - MG</li>
     <li>💼 Senior Software Engineer @ Stone</li>
     <li>🐹 Golang Google Developer Expert</li>
     <li>🔥 Botafogo</li>
     <li>🌐 Tech Hub JF Organizer</li>
-    <li>🧙‍♂️ Mago</li>
-
   </ul>
 </div>
 
-<div class="flex flex-col items-center gap-2">
+<div class="flex flex-col justify-center items-center gap-2">
   <img src="/qrcode-links.webp" alt="QR Code" style="width:200px;height:200px;min-width:200px;min-height:200px;background:#f1f5f9;border:2px solid #e2e8f0;border-radius:8px;object-fit:fill" />
-  <p class="text-xs text-center" style="color:#94a3b8">My social links</p>
 </div>
 
 </div>

@@ -112,6 +112,8 @@ R0 invalid mem access 'map_value_or_null'
 The program will fail to load, protecting the host system from crashing!
 </div>
 
+<img src="https://media.giphy.com/media/njYrp176NQsHS/giphy.gif" alt="You shall not pass" class="w-48 h-24 rounded mt-3 object-cover mx-auto" />
+
 </div>
 </div>
 

@@ -17,36 +17,25 @@ Go has emerged as the clear industry leader for this task. Let's see why.
 
 Writing the control plane in Go offers critical advantages for modern cloud infrastructure.
 
-<div class="grid grid-cols-2 gap-8 mt-4 text-sm">
+<div class="grid gap-8 mt-4" style="grid-template-columns: 2.5fr 1fr">
+<div class="grid grid-cols-2 gap-6 text-sm">
 <div>
+<p class="font-bold text-slate-800">1. Cloud-Native Alignment</p>
+<p class="text-xs text-slate-600 mt-1">Docker, K8s, and CNCF tools are written in Go. Integration is native and seamless.</p>
 
-<p class="font-bold text-slate-800">1. Cloud-Native Ecosystem Alignment</p>
-<ul class="list-disc ml-4 space-y-1 mt-1 text-slate-700">
-  <li>Docker, Kubernetes, Prometheus, and most CNCF tools are written in Go.</li>
-  <li>Writing your eBPF control plane in Go makes integration seamless. You can import Kubernetes client libraries directly.</li>
-</ul>
-
-<p class="font-bold text-slate-800 mt-4">2. Native Concurrency (Goroutines)</p>
-<ul class="list-disc ml-4 space-y-1 mt-1 text-slate-700">
-  <li>eBPF events can trigger thousands of times per second.</li>
-  <li>Go's lightweight goroutines make it easy to process streams of events concurrently from BPF maps or ring buffers.</li>
-</ul>
-
+<p class="font-bold text-slate-800 mt-3">2. Concurrency (Goroutines)</p>
+<p class="text-xs text-slate-600 mt-1">Lightweight goroutines handle streams of thousands of eBPF events per second concurrently.</p>
 </div>
 <div>
+<p class="font-bold text-slate-800">3. Single Static Binaries</p>
+<p class="text-xs text-slate-600 mt-1">No external runtime dependencies. Perfect for minimal container images and DaemonSets.</p>
 
-<p class="font-bold text-slate-800">3. Single, Static Binaries</p>
-<ul class="list-disc ml-4 space-y-1 mt-1 text-slate-700">
-  <li>Go compiles to a single, static binary with no external runtime dependencies.</li>
-  <li>This is perfect for shipping agents to minimal container images or running them as DaemonSets.</li>
-</ul>
-
-<p class="font-bold text-slate-800 mt-4">4. Safety & Speed</p>
-<ul class="list-disc ml-4 space-y-1 mt-1 text-slate-700">
-  <li>Go offers garbage collection and type safety in userspace, while still achieving near-C speeds.</li>
-  <li>Prevents security vulnerabilities like memory leaks or buffer overflows in userspace.</li>
-</ul>
-
+<p class="font-bold text-slate-800 mt-3">4. Safety & Performance</p>
+<p class="text-xs text-slate-600 mt-1">Type safety and garbage collection prevent leaks, achieving near-C execution speeds.</p>
+</div>
+</div>
+<div class="flex flex-col items-center justify-center">
+  <img src="https://golang.org/doc/gopher/run.png" alt="Go Gopher" class="w-32 h-auto object-contain" />
 </div>
 </div>
 

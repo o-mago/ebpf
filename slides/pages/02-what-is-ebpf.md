@@ -44,6 +44,8 @@ How do we add new functionality (e.g., a new security monitor or a custom router
 <strong>Verdict</strong>: Extremely risky for production deployments.
 </div>
 
+<img src="https://media.giphy.com/media/zyclIRxMwlY40/giphy.gif" alt="Kernel Modules Fire" class="w-48 h-24 rounded mt-3 object-cover mx-auto" />
+
 </div>
 </div>
 

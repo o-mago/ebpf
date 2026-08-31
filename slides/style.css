@@ -29,14 +29,14 @@
 .slidev-layout h2 { color: #1e293b !important; }
 
 /* ── Cards ── */
-.card { border-radius: 8px; padding: 14px 16px; }
+.card { border-radius: 8px; padding: 10px 14px; }
 .card-blue  { background: #eff6ff; border: 1px solid #93c5fd; }
 .card-green { background: #f0fdf4; border: 1px solid #86efac; }
 .card-orange{ background: #fff7ed; border: 1px solid #fdba74; }
 .card-purple{ background: #faf5ff; border: 1px solid #c4b5fd; }
 
 /* ── Highlight boxes ── */
-.hl { border-radius: 6px; padding: 12px 18px; }
+.hl { border-radius: 6px; padding: 8px 14px; }
 .hl-blue   { background: #eff6ff; border-left: 4px solid #3b82f6; }
 .hl-orange { background: #fff7ed; border-left: 4px solid #f97316; }
 .hl-green  { background: #f0fdf4; border-left: 4px solid #22c55e; }
@@ -72,5 +72,50 @@ strong { color: #0f172a; }
 /* ── Fix Mermaid Text Clipping ── */
 .mermaid text, svg text {
   font-family: system-ui, -apple-system, sans-serif !important;
+}
+
+/* ── Font Size Adjustments ── */
+.slidev-layout p, 
+.slidev-layout ul, 
+.slidev-layout ol, 
+.slidev-layout li {
+  font-size: 1.02rem !important;
+  line-height: 1.35 !important;
+}
+.slidev-layout ul, 
+.slidev-layout ol {
+  margin-top: 0.25rem !important;
+  margin-bottom: 0.25rem !important;
+}
+.slidev-layout li {
+  margin-top: 0.1rem !important;
+  margin-bottom: 0.1rem !important;
+}
+.slidev-layout .text-sm {
+  font-size: 0.9rem !important;
+}
+.slidev-layout .text-xs {
+  font-size: 0.82rem !important;
+}
+
+/* ── About Me Slide Overrides ── */
+.slidev-layout .name-huge {
+  font-size: 2.3rem !important;
+  line-height: 0.1 !important;
+}
+.slidev-layout .name-big {
+  font-size: 2.0rem !important;
+  line-height: 0.5 !important;
+}
+.slidev-layout .text-huge li {
+  font-size: 1.15rem !important;
+  line-height: 1.4 !important;
+}
+.slidev-layout .list-none,
+.slidev-layout .list-none li,
+.slidev-layout .list-none li::before {
+  list-style: none !important;
+  list-style-type: none !important;
+  content: none !important;
 }
 
