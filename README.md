@@ -10,14 +10,8 @@ The environment is fully portable and runs inside a lightweight, pre-configured 
 
 The workspace is organized into the following sub-projects:
 
-### 1. [``slides/``](file:///Users/mago/dev/ebpf/slides) (Theoretical Introduction)
-Contains interactive slide presentations based on **Slidev** (Markdown/HTML) serving as a conceptual introduction to the eBPF ecosystem (its architecture, hooks like uprobes, kprobes, tracepoints, socket filters, XDP, and the inner workings of the kernel verifier).
-
-To run and view the slides locally in your browser:
-```bash
-# From the root of this repository:
-mise run run:slides
-```
+### 1. [Slides](https://docs.google.com/presentation/d/e/2PACX-1vQ4HW4jYKiE-3sNhtLr16APXL-RibyGE1am2WrjnoEukTs9kK3d91IQ4qq5L7U0UhHzyIa7SsoAXs2d/pub?start=false&loop=false&delayms=3000) (Theoretical Introduction)
+A conceptual introduction to the eBPF ecosystem (its architecture, hooks like uprobes, kprobes, tracepoints, socket filters, XDP, and the inner workings of the kernel verifier).
 
 ### 2. [``packet-counter/``](file:///Users/mago/dev/ebpf/packet-counter) (XDP Packet Counter)
 An introductory, high-performance network packet counter hooked at the **XDP (eXpress Data Path)** level on the network interface. It atomically increments counter maps in kernel memory for every incoming frame before passing the packet up to the traditional OS network stack.
