@@ -1,10 +1,6 @@
 [tools]
 go = "1.27.0"
 
-[tasks."run:slides"]
-description = "Install dependencies and run the Slidev introduction slides locally"
-run = "cd slides && npm install && npm run dev"
-
 [tasks."setup:lima"]
 description = "Verify Lima installation, install via Homebrew if missing, and start/provision VM"
 run = """
