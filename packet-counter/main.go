@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log/slog"
 	"net"
+	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
@@ -56,6 +57,18 @@ func main() {
 	stop := make(chan os.Signal, 1)
 	signal.Notify(stop, os.Interrupt, syscall.SIGTERM)
 
+	// Start a dummy HTTP server so we can generate traffic from api.http
+	go func() {
+		http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+			slog.Info("Received HTTP request", "path", r.URL.Path)
+			w.Write([]byte("Packet received!\n"))
+		})
+		slog.Info("Starting dummy HTTP server to receive traffic on :8080")
+		if err := http.ListenAndServe(":8080", nil); err != nil {
+			slog.Error("HTTP server failed", "error", err)
+		}
+	}()
+
 	for {
 		select {
 		case <-ticker.C:
@@ -80,7 +93,13 @@ func getInterface() (*net.Interface, error) {
 		return nil, err
 	}
 
-	// First, try to look for eth0 (common in containers/VMs)
+	// For local testing with api.http, we want to listen on loopback first
+	// because port-forwarded traffic from the host arrives via 'lo'.
+	if iface, err := net.InterfaceByName("lo"); err == nil {
+		return iface, nil
+	}
+
+	// Then, try to look for eth0 (common in containers/VMs)
 	if iface, err := net.InterfaceByName("eth0"); err == nil {
 		return iface, nil
 	}

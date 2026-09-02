@@ -1,0 +1,9 @@
+### Send a request to the dummy server running inside the VM!
+### Since it's forwarded to your Mac's localhost:8080, this traffic 
+### will traverse the VM's loopback interface ('lo') where XDP is now attached.
+GET http://localhost:8080/
+Accept: application/json
+
+### Send another request
+GET http://localhost:8080/
+Accept: text/plain
