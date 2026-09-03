@@ -29,6 +29,10 @@ fi
 description = "Run Packet Counter project with supervised logs in a single terminal"
 run = "limactl shell lima go run supervisor.go packet-counter || true"
 
+[tasks."run:pc"]
+description = "Run Packet Counter project with supervised logs in a single terminal"
+run = "limactl shell lima go run supervisor.go packet-counter || true"
+
 [tasks."run:otel"]
 description = "Run OpenTelemetry Auto-Instrumentation (Tracer & Profiler) project in a single terminal"
 run = "limactl shell lima go run supervisor.go otel || true"
